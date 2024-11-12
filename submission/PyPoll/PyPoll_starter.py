@@ -1,12 +1,9 @@
-# -*- coding: UTF-8 -*-
-"""PyPoll Homework Starter File."""
-
 # Import necessary modules
 import csv
 import os
 
 # Files to load and output (update with correct file paths)
-filepath = os.path.join("Resources/election_data.csv")
+filepath = os.path.join("Resources\election_data.csv")
 
 # Initialize variables to track the election data
 total_votes = 0  # Track the total number of votes cast
@@ -15,10 +12,12 @@ total_votes = 0  # Track the total number of votes cast
 candidate_votes = {}
 
 # Winning Candidate and Winning Count Tracker
-
+winning_candidate = ""
+winning_count = 0
+winning_percentage = 0.0
 
 # Open the CSV file and process it
-with open(file_to_load) as election_data:
+with open(filepath) as election_data:
     reader = csv.reader(election_data)
 
     # Skip the header row
@@ -27,14 +26,11 @@ with open(file_to_load) as election_data:
     # Loop through each row of the dataset and process it
     for row in reader:
 
-        # Print a loading indicator (for large datasets)
-        print(". ", end="")
-
         # Increment the total vote count for each row
         total_votes += 1
 
         # Get the candidate's name from the row
-        candidate = int[2]
+        candidate = row[2]
 
         # If the candidate is not already in the candidate list, add them
         if candidate not in candidate_votes:
@@ -43,41 +39,42 @@ with open(file_to_load) as election_data:
         else:
             candidate_votes[candidate] += 1
 
-# Open a text file to save the output
-#with open(file_to_output, "w") as txt_file:
-
-    # Print the total vote count (to terminal)
-
-
-    # Write the total vote count to the text file
-
+    # Collect candidate summaries
+    candidate_summaries = []
 
     # Loop through the candidates to determine vote percentages and identify the winner
+    for candidate, votes in candidate_votes.items():
+        # Calculate the vote percentage
+        vote_percentage = (votes / total_votes) * 100
 
+        # Print the candidate's results to the terminal
+        candidate_summary = (f"{candidate}: {vote_percentage:.3f}% ({votes} votes)")
+        candidate_summaries.append(candidate_summary)
 
-        # Get the vote count and calculate the percentage
+        # Determine if this candidate is the winning candidate
+        if votes > winning_count:
+            winning_count = votes
+            winning_candidate = candidate
+            winning_percentage = vote_percentage
 
+# Join all candidate summaries into a single string with line breaks
+all_candidate_summaries = "\n".join(candidate_summaries)
 
-        # Update the winning candidate if this one has more votes
-
-
-        # Print and save each candidate's vote count and percentage
-
-
-    # Generate and print the winning candidate summary
-
-
-    # Save the winning candidate summary to the text file
-
-'''
+# Generate and print the winning candidate summary
+winning_summary = (f"""
+-------------------------
 Election Results
 -------------------------
-Total Votes: 369711
+Total Votes: {total_votes}               
 -------------------------
-Charles Casper Stockham: 23.049% (85213)
-Diana DeGette: 73.812% (272892)
-Raymon Anthony Doane: 3.139% (11606)
+{all_candidate_summaries}
 -------------------------
-Winner: Diana DeGette
+Winner: {winning_candidate}
 -------------------------
-'''
+""")
+print(winning_summary)
+
+# Save the winning candidate summary to the text file
+results = "results.txt"
+with open(results, "w") as txt_file:
+    txt_file.write(winning_summary)
